@@ -9,7 +9,11 @@
 
 using namespace std;
 
-int main(){
+void registerUser (){
+    string username, password ;
+}
 
+int main(){
+    
     return 0;
 }
