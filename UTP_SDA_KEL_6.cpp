@@ -27,6 +27,25 @@ void registerUser (){
     
 }
 
+bool loginUser(string& loggedInUser) {
+    string username, password ;
+    cout << "Masukan username: ";
+    cin >> username;
+    cout << "Masukan password: ";
+    cin >> password;
+
+    ifstream file("userdata.txt");
+    string fileUsername, filePassword;
+    while (file >> fileUsername >> filePassword) {
+        if (fileUsername == username && filePassword == password) {
+            loggedInUser = username;
+            return true;
+        }
+    }
+    cout << "Username atau password salah." << endl;
+    return false;
+}
+
 int main(){
 
     return 0;
