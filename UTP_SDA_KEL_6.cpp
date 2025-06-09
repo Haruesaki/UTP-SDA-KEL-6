@@ -24,7 +24,7 @@ void registerUser (){
     ofstream file ("userdata.txt", ios::app);
     file << username << " " << password << endl ;
     cout << "Registrasi berhasil!" << endl;
-    
+
 }
 
 bool loginUser(string& loggedInUser) { //menambahkan fungsi loginUser
@@ -44,6 +44,16 @@ bool loginUser(string& loggedInUser) { //menambahkan fungsi loginUser
     }
     cout << "Username atau password salah." << endl;
     return false;
+}
+bool isUsernameExist (const string& username){
+    ifstream file ("userdata.txt");
+    string fileUsername, filePassword;
+    while (file >> fileUsername >> filePassword){
+        if (fileUsername == username){
+            return true;
+        }
+    }
+
 }
 
 int main(){
