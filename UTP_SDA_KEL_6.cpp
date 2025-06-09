@@ -1,3 +1,4 @@
+// Kelompok 6, SDA
 #include <iostream>
 #include <fstream>
 #include <string>
