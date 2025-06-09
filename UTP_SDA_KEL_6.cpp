@@ -27,7 +27,7 @@ void registerUser (){
     
 }
 
-bool loginUser(string& loggedInUser) {
+bool loginUser(string& loggedInUser) { //menambahkan fungsi loginUser
     string username, password ;
     cout << "Masukan username: ";
     cin >> username;
