@@ -9,6 +9,24 @@
 
 using namespace std;
 
+string getTodayDate(){
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    char buffer[11];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d", ltm);
+    return string(buffer);
+}
+
+bool isUsernameExist (const string& username){
+    ifstream file ("userdata.txt");
+    string fileUsername, filePassword;
+    while (file >> fileUsername >> filePassword){
+        if (fileUsername == username){
+            return true;
+        }
+    }
+
+}
 void registerUser (){
     string username, password ;
     cout << "Masukkan username: ";
@@ -44,16 +62,6 @@ bool loginUser(string& loggedInUser) { //menambahkan fungsi loginUser
     }
     cout << "Username atau password salah." << endl;
     return false;
-}
-bool isUsernameExist (const string& username){
-    ifstream file ("userdata.txt");
-    string fileUsername, filePassword;
-    while (file >> fileUsername >> filePassword){
-        if (fileUsername == username){
-            return true;
-        }
-    }
-
 }
 
 int main(){
