@@ -17,6 +17,113 @@ string getTodayDate(){
     return string(buffer);
 }
 
+class Barang {
+    string makanan[10] = {
+        "Oreo Neapolitan",
+        "Hello Panda Strawberry",
+        "Samyang Buldak",
+        "Taro Barbeque",
+        "Lays",
+        "Sari Roti Tawar"
+    };
+    double hargaMakanan[10] = {13500, 9300, 19500, 9000, 13900, 18000};
+    
+    string minuman[10] = {
+        "Sprite Botol Sedang",
+        "Coca-Cola Kaleng",
+        "AW Kaleng",
+        "Air Mineral"
+    };
+    double hargaMinuman[10] = {5400, 6600, 6000, 3900};
+
+    int jumlahMakanan = 6;
+    int jumlahMinuman = 4;
+
+public:
+    void tampilkanDaftarBarang() {
+        cout << "\n=== Daftar Makanan ===\n";
+        for (int i = 0; i < jumlahMakanan; i++) {
+            cout << i + 1 << ". " << makanan[i] << " - Rp" << hargaMakanan[i] << endl;
+        }
+        cout << "\n=== Daftar Minuman ===\n";
+        for (int i = 0; i < jumlahMinuman; i++) {
+            cout << i + 1 + jumlahMakanan << ". " << minuman[i] << " - Rp" << hargaMinuman[i] << endl;
+        }
+    }
+
+    void tampilkanDetailBarang(int nomor) {
+        if (nomor >= 1 && nomor <= jumlahMakanan) {
+            int index = nomor - 1;
+            cout << "\nDetail Barang:\n";
+            cout << "Nama     : " << makanan[index] << endl;
+            cout << "Kategori : Makanan\n";
+            cout << "Harga    : Rp" << hargaMakanan[index] << endl;
+        } else if (nomor > jumlahMakanan && nomor <= jumlahMakanan + jumlahMinuman) {
+            int index = nomor - jumlahMakanan - 1;
+            cout << "\nDetail Barang:\n";
+            cout << "Nama     : " << minuman[index] << endl;
+            cout << "Kategori : Minuman\n";
+            cout << "Harga    : Rp" << hargaMinuman[index] << endl;
+        } else {
+            cout << "Nomor tidak valid.\n";
+        }
+    }
+
+    int getTotalBarang() {
+        return jumlahMakanan + jumlahMinuman;
+    }
+};
+
+class HistoryManager {
+public:
+    queue<string> historyHariIni[1000];
+    stack<string> historyKeseluruhan[1000];
+    int index = 0;
+
+    void tambahRiwayat(const string& data) {
+        if (index < 1000) {
+            historyHariIni[index].push(data);
+            historyKeseluruhan[index].push(data);
+        }
+    }
+
+    void tampilkanRiwayatHariIni() {
+        cout << "\n=== HISTORY PEMBELIAN HARI INI (QUEUE) ===\n";
+        for (int i = 0; i <= index; i++) {
+            queue<string> temp = historyHariIni[i];
+            while (!temp.empty()) {
+                cout << "- " << temp.front() << endl;
+                temp.pop();
+            }
+        }
+    }
+
+    void tampilkanRiwayatKeseluruhan() {
+        cout << "\n=== HISTORY KESELURUHAN (STACK) ===\n";
+        for (int i = index; i >= 0; i--) {
+            stack<string> temp = historyKeseluruhan[i];
+            while (!temp.empty()) {
+                cout << "- " << temp.top() << endl;
+                temp.pop();
+            }
+        }
+    }
+
+    void simpanTransaksi(queue<string> transaksiQueue, stack<string> transaksiStack) {
+        if (index < 1000) {
+            while (!transaksiQueue.empty()) {
+                historyHariIni[index].push(transaksiQueue.front());
+                transaksiQueue.pop();
+            }
+            while (!transaksiStack.empty()) {
+                historyKeseluruhan[index].push(transaksiStack.top());
+                transaksiStack.pop();
+            }
+            index++;
+        }
+    }
+};
+
 bool isUsernameExist (const string& username){
     ifstream file ("userdata.txt");
     string fileUsername, filePassword;
