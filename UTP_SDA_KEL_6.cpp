@@ -210,6 +210,53 @@ bool loginUser(string& loggedInUser) { //menambahkan fungsi loginUser
     return false;
 }
 
+void tampilkanHistoryFIFO(const string& username) { 
+    string filename = username + ".txt";
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "Tidak ada file transaksi untuk user ini.\n";
+        return;
+    }
+
+    string tanggal = getTodayDate();
+    char lihatLain;
+
+    do {
+        file.clear();
+        file.seekg(0, ios::beg);
+
+        string line;
+        bool tanggalDitemukan = false;
+        bool bacaFIFO = false;
+
+        while (getline(file, line)) {
+            if (line == "=== Tanggal: " + tanggal + " ===") {
+                tanggalDitemukan = true;
+            } else if (tanggalDitemukan && line == "[FIFO]") {
+                bacaFIFO = true;
+                cout << "\n=== HISTORY PEMBELIAN FIFO: " << tanggal << " ===\n";
+            } else if (bacaFIFO && line == "[LIFO]") {
+                break;
+            } else if (bacaFIFO) {
+                cout << line << endl;
+            }
+        }
+
+        if (!tanggalDitemukan) {
+            cout << "\nTidak ada transaksi untuk tanggal " << tanggal << ".\n";
+        }
+
+        cout << "\nLihat tanggal lain? (y/n): ";
+        cin >> lihatLain;
+        if (lihatLain == 'y' || lihatLain == 'Y') {
+            cout << "Masukkan tanggal (YYYY-MM-DD): ";
+            cin >> tanggal;
+        }
+    } while (lihatLain == 'y' || lihatLain == 'Y');
+
+    file.close();
+}
+
 int main(){
 
     return 0;
