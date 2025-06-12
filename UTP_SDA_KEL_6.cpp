@@ -17,6 +17,45 @@ string getTodayDate(){
     return string(buffer);
 }
 
+void simpanTransaksiKeFile(const string& username, const string& tanggal, const queue<string>& queueData,
+    const stack<string>& stackData) {
+    string filename = username + ".txt";
+
+    ifstream cekFile(filename);
+    bool fileBaru = !cekFile.good();
+    cekFile.close();
+
+    ofstream file(filename, iso::app);
+    if (!file.is_open()) {
+        cout << "Gagal membuka file untuk menyimpan transaksi.\n";
+        return;
+    }
+
+    file << "=== Tanggal: " << tanggal << " ===\n";
+    file << "[FIFO]\n";
+    queue<string> tampQueue = queueData;
+    while (!tempQueue.empty()) {
+        file << "- " << tempQueue.front() << "\n";
+        tempQueue.pop();
+    }
+
+    file << "[FIFO]\n";
+    stack<string> tampStack = stackData;
+    while (!tempStack.empty()) {
+        file << "- " << tempStacke.pop() << "\n";
+        tempStack.pop();
+    }
+    
+    file << "\n";
+    file.close();
+
+    if (fileBaru) {
+        cout << "File baru \"" << filename << "\" dibuat dan transaksi disimpan.\n;
+    } else {
+        cout << "Transaksi ditambahkan ke file \"" << filename << "\".\n";
+    }
+}
+
 class Barang {
     string makanan[10] = {
         "Oreo Neapolitan",
