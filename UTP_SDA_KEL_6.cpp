@@ -108,6 +108,7 @@ public:
         }
     }
 
+
     int getTotalBarang() {
         return jumlahMakanan + jumlahMinuman;
     }
@@ -187,15 +188,15 @@ void registerUser (){
     cin >> password;
     ofstream file ("userdata.txt", ios::app);
     file << username << " " << password << endl ;
-    cout << "Registrasi berhasil!" << endl;
+    cout << "Registrasi Berhasil!" << endl;
 
 }
 
 bool loginUser(string& loggedInUser) { //menambahkan fungsi loginUser
     string username, password ;
-    cout << "Masukan username: ";
+    cout << "Masukkan username: ";
     cin >> username;
-    cout << "Masukan password: ";
+    cout << "Masukkan password: ";
     cin >> password;
 
     ifstream file("userdata.txt");
