@@ -25,7 +25,7 @@ void simpanTransaksiKeFile(const string& username, const string& tanggal, const 
     bool fileBaru = !cekFile.good();
     cekFile.close();
 
-    ofstream file(filename, iso::app);
+    ofstream file(filename, ios::app);
     if (!file.is_open()) {
         cout << "Gagal membuka file untuk menyimpan transaksi.\n";
         return;
@@ -33,16 +33,16 @@ void simpanTransaksiKeFile(const string& username, const string& tanggal, const 
 
     file << "=== Tanggal: " << tanggal << " ===\n";
     file << "[FIFO]\n";
-    queue<string> tampQueue = queueData;
+    queue<string> tempQueue = queueData;
     while (!tempQueue.empty()) {
         file << "- " << tempQueue.front() << "\n";
         tempQueue.pop();
     }
 
-    file << "[FIFO]\n";
-    stack<string> tampStack = stackData;
+    file << "[LIFO]\n";
+    stack<string> tempStack = stackData;
     while (!tempStack.empty()) {
-        file << "- " << tempStacke.pop() << "\n";
+        file << "- " << tempStack.top() << "\n";
         tempStack.pop();
     }
     
@@ -50,7 +50,7 @@ void simpanTransaksiKeFile(const string& username, const string& tanggal, const 
     file.close();
 
     if (fileBaru) {
-        cout << "File baru \"" << filename << "\" dibuat dan transaksi disimpan.\n;
+        cout << "File baru \"" << filename << "\" dibuat dan transaksi disimpan.\n";
     } else {
         cout << "Transaksi ditambahkan ke file \"" << filename << "\".\n";
     }
@@ -277,7 +277,7 @@ void tampilkanHistoryLIFO(const string& username) {
             if (!currentTanggal.empty() && !buffer.empty()) {
                 cout << "Tanggal: " << currentTanggal << endl;
                 for (const auto& item : buffer) {
-                    cout << item endl;
+                    cout << item << endl;
                 }
                 cout << endl;
                 buffer.clear();
@@ -285,7 +285,7 @@ void tampilkanHistoryLIFO(const string& username) {
             currentTanggal = line.substr(13, 10);
         } else if (line == "[LIFO]") {
             bacaLIFO = true;
-        } else if (line.empty() || kine == "[LIFO]") {
+        } else if (line.empty() || line == "[LIFO]") {
             bacaLIFO = false;
         } else if (bacaLIFO) {
             buffer.push_back(line);
@@ -302,7 +302,111 @@ void tampilkanHistoryLIFO(const string& username) {
 
     file.close();
 }
-        
+
+void afterLoginMenu(const string& username) {
+    int pilihan;
+    bool stayLoggedIn = true;
+    Barang daftarBarang;
+
+    static map<string, queue<string>> historyHariIniMap;
+    static map<string, stack<string>> historyKeseluruhanMap;
+
+
+    while (stayLoggedIn) {
+        cout << "\n=== MENU PENGGUNA (" << username << ") ===\n";
+        cout << "1. Input barang\n";
+        cout << "2. Kembali ke menu utama\n";
+        cout << "3. Tampilkan history hari ini\n";
+        cout << "4. Tampilkan history keseluruhan\n";
+        cout << "Pilih opsi (1-4): ";
+        cin >> pilihan;
+
+        switch (pilihan) {
+            case 1: {
+                stack<string> stackBarang;
+                queue<string> queueBarang;
+                int nomor;
+                do {
+                    daftarBarang.tampilkanDaftarBarang();
+                    cout << "\nMasukkan nomor barang (0 untuk selesai): ";
+                    cin >> nomor;
+
+                    if (nomor == 0) break;
+
+                    string nama, kategori;
+                    double harga;
+
+                    if (nomor >= 1 && nomor <= 6) {
+                        string makananList[6] = {
+                            "Oreo Neapolitan", "Hello Panda Strawberry",
+                            "Samyang Buldak", "Taro Barbeque",
+                            "Lays", "Sari Roti Tawar"
+                        };
+                        double hargaMakanan[6] = {13500, 9300, 19500, 9000, 13900, 18000};
+                        nama = makananList[nomor - 1];
+                        harga = hargaMakanan[nomor - 1];
+                        kategori = "Makanan";
+                    } else if (nomor >= 7 && nomor <= 10) {
+                        string minumanList[4] = {
+                            "Sprite Botol Sedang", "Coca-Cola Kaleng",
+                            "AW Kaleng", "Air Mineral"
+                        };
+                        double hargaMinuman[4] = {5400, 6600, 6000, 3900};
+                        nama = minumanList[nomor - 7];
+                        harga = hargaMinuman[nomor - 7];
+                        kategori = "Minuman";
+                    } else {
+                        cout << "Nomor tidak valid.\n";
+                        continue;
+                    }
+
+                    string data = nama + " (" + kategori + ") - Rp" + to_string((int)harga);
+                    stackBarang.push(data);
+                    queueBarang.push(data);
+                    cout << "Berhasil ditambahkan: " << data << "\n";
+
+                } while (true);
+
+                string today = getTodayDate();
+
+                stack<string> stackCopy = stackBarang;
+                queue<string> queueCopy = queueBarang;
+
+                while (!stackBarang.empty()) {
+                    string data = stackBarang.top(); stackBarang.pop();
+                    historyKeseluruhanMap[today].push(data);
+                }
+                while (!queueBarang.empty()) {
+                    string data = queueBarang.front(); queueBarang.pop();
+                    historyHariIniMap[today].push(data);
+                }
+
+                simpanTransaksiKeFile(username, today, queueCopy, stackCopy);
+
+                cout << "\nTransaksi hari ini telah disimpan.\n";
+
+                break;
+            }
+
+            case 2:
+                stayLoggedIn = false;
+                cout << "Kembali ke menu utama." << endl;
+                break;
+
+            case 3: {
+                tampilkanHistoryFIFO(username);
+                break;
+            }
+
+            case 4: {
+                tampilkanHistoryLIFO(username);
+                break;
+            }
+            default:
+                cout << "Pilihan tidak valid. Silakan coba lagi." << endl;
+        }
+    }
+}
 
 int main(){
 
