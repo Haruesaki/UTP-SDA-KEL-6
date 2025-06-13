@@ -172,7 +172,7 @@ bool isUsernameExist (const string& username){
             return true;
         }
     }
-
+        return false;
 }
 void registerUser (){
     string username, password ;
@@ -273,7 +273,7 @@ void tampilkanHistoryLIFO(const string& username) {
     vector<string> buffer;
 
     while (getline(file, line)) {
-        if (line.find("== Tanggal: ") != string::npos) {
+        if (line.find("=== Tanggal: ") != string::npos) {
             if (!currentTanggal.empty() && !buffer.empty()) {
                 cout << "Tanggal: " << currentTanggal << endl;
                 for (const auto& item : buffer) {
@@ -409,6 +409,35 @@ void afterLoginMenu(const string& username) {
 }
 
 int main(){
+    int pilihan;
+    bool isRunning = true;
 
+    while(isRunning){
+        cout << "\n=== MENU UTAMA ===\n";
+        cout << "1. Daftar\n";
+        cout << "2. Login\n";
+        cout << "3. Keluar\n";
+        cout << "Pilih opsi (1-3): ";
+        cin >> pilihan;
+
+        switch (pilihan){
+        case 1: 
+            registerUser();
+            break;
+        case 2: {
+            string currentUser;
+            if (loginUser(currentUser)) {
+                afterLoginMenu(currentUser);
+            } break;
+        }
+        case 3:
+            cout << "Program selesai. Terima kasih.\n";
+                isRunning = false;
+                break;
+    
+        default:
+        cout<< "Pilihan tidak valid.\n";
+    }
+    }
     return 0;
 }
