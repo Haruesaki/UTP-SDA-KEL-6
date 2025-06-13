@@ -258,6 +258,52 @@ void tampilkanHistoryFIFO(const string& username) {
     file.close();
 }
 
+void tampilkanHistoryLIFO(const string& username) {
+    string filename = username + ".txt";
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "Tidak ada file transaksi untuk user ini.\n";
+        return;
+    }
+
+    cout << "\n=== HISTORY KESELURUHAN (LIFO) DARI FILE ===\n";
+    string line;
+    string currentTanggal;
+    bool bacaLIFO = false;
+    vector<string> buffer;
+
+    while (getline(file, line)) {
+        if (line.find("== Tanggal: ") != string::npos) {
+            if (!currentTanggal.empty() && !buffer.empty()) {
+                cout << "Tanggal: " << currentTanggal << endl;
+                for (const auto& item : buffer) {
+                    cout << item endl;
+                }
+                cout << endl;
+                buffer.clear();
+            }
+            currentTanggal = line.substr(13, 10);
+        } else if (line == "[LIFO]") {
+            bacaLIFO = true;
+        } else if (line.empty() || kine == "[LIFO]") {
+            bacaLIFO = false;
+        } else if (bacaLIFO) {
+            buffer.push_back(line);
+        }
+    }
+
+    if (!currentTanggal.empty() && !buffer.empty()) {
+        cout << "Tanggal: " << currentTanggal << endl;
+        for (const auto& item : buffer) {
+            cout << item << endl;
+        }
+        cout << endl;
+    }
+
+    file.close();
+}
+        
+
 int main(){
 
     return 0;
