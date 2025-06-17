@@ -437,7 +437,7 @@ int main(){
     
         default:
         cout<< "Pilihan tidak valid.\n";
-    }
+        }
     }
     return 0;
 }
