@@ -439,5 +439,6 @@ int main(){
         cout<< "Pilihan tidak valid.\n";
         }
     }
+    cout << "Program selesai. Terima kasih.\n";
     return 0;
 }
